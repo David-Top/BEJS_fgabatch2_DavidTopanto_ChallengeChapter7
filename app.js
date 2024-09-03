@@ -1,4 +1,6 @@
+require('./config/lib/instrument');
 var express = require('express');
+const Sentry = require('@sentry/node')
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -15,8 +17,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const port = process.env.PORT;
-
 prisma.$connect((err) => {
     if (err) {
         return console.log('Error Aquiring Client', err);
@@ -25,5 +25,8 @@ prisma.$connect((err) => {
 })
 
 app.use(INDEX_ROUTES)
+
+// The error handler must be registered before any other error middleware and after all controllers
+Sentry.setupExpressErrorHandler(app);
 
 module.exports = app;
