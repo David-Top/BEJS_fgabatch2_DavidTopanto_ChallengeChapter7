@@ -67,6 +67,44 @@ const USERS = {
       return { status: "failed", message: err.message };
     }
   },
+
+  update: async (req) => {
+    const userId = req.params.id;
+    const isUser = await prisma.users.findUnique({
+        where: {
+            id: userId
+        }
+    })
+    if (!isUser) {
+        throw new Error("User not Found");
+    }
+
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+        throw new Error("Data can not be Null");        
+    }
+
+    try {
+        const result = await prisma.users.update({
+            where: {
+                id: userId
+            },
+            data: {
+                username,
+                email,
+                password
+            }
+        })
+
+        return result;
+    } catch (err) {
+        console.log(err);
+        return {
+            status: "failed",
+            message: err.message
+        }
+    }
+  }
 };
 
 module.exports = USERS;

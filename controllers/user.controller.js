@@ -83,7 +83,7 @@ async function updateProfilePic(req, res) {
 
         res.status(200).json({
             status: true,
-            message: "Succes PUT User Profile Picture data",
+            message: "Success PUT User Profile Picture data",
             data: upload,
         })
     } catch (err) {
@@ -94,9 +94,27 @@ async function updateProfilePic(req, res) {
     }
 }
 
+async function updateUser(req, res) {
+    try {
+        const userUpdated = await USERS_MODELS.update(req);
+
+        res.status(200).json({
+            status: true,
+            message: "Success PUT User data",
+            data: userUpdated
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: false,
+            message: err.message
+        })
+    }
+}
+
 module.exports = {
     index,
     createUser,
     userById,
-    updateProfilePic
+    updateProfilePic,
+    updateUser
 }

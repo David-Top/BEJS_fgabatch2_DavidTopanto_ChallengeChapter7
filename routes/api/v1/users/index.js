@@ -16,4 +16,7 @@ router.get('/:id', USERS_CONTROLLERS.userById);
 //PUT user profile pic
 router.put('/upload-profile-pic/:id', PIC.post.single('profilePicture'), USERS_CONTROLLERS.updateProfilePic);
 
+//PUT user data
+router.put('/update/:id', USERS_CONTROLLERS.updateUser);
+
 module.exports = router;
