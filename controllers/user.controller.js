@@ -1,4 +1,4 @@
-const imageKitConfig = require('../config/lib/imagekit.js');
+// const imageKitConfig = require('../config/lib/imagekit.js');
 const prisma = require('../config/prisma/index.js')
 const USERS_MODELS = require('../models/users.model.js');
 
