@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,21 +14,34 @@ datasource db {
 }
 
 model users {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username   String    @db.VarChar(20)
-  email      String    @unique @db.VarChar(225)
-  password   String    @db.VarChar(225)
-  profilePic String?   @db.VarChar(225)
-  createdAt  DateTime? @default(now()) @db.Timestamptz(6)
+  id          String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  username    String    @db.VarChar(20)
+  email       String    @db.VarChar(225) @unique 
+  password    String    @db.VarChar(225)
+  profilePic  String?   @db.VarChar(225)
+  otp         String?   @db.VarChar(10)
+  socket_id   String?   @db.VarChar(225)
+  user_agent  String?   @db.VarChar(225)
+  createdAt   DateTime? @db.Timestamptz(6) @default(now())
+  updatedAt   DateTime? @db.Timestamptz() @updatedAt
   post       posts[]
 }
 
+model notifications {
+  id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  user_id   String?   @db.VarChar(225)
+  message   String?
+  status    String?   @db.VarChar(225)
+  createdAt DateTime  @db.Timestamptz(6) @default(now())
+  updatedAt DateTime  @db.Timestamptz() @updatedAt
+}
 model posts {
+  id          String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
   pic         String    @db.VarChar(225)
   title       String    @db.VarChar(225)
   description String    @db.VarChar(225)
   userId      String    @db.Uuid
   createdAt   DateTime? @default(now()) @db.Timestamptz(6)
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  updatedAt   DateTime? @db.Timestamptz() @updatedAt  
   user        users     @relation(fields: [userId], references: [id])
 }
