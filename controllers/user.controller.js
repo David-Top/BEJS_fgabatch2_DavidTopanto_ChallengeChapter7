@@ -111,10 +111,28 @@ async function updateUser(req, res) {
     }
 }
 
+async function changePassword(req, res) {
+    try {
+        const result = await USERS_MODELS.updatePassword(req)
+
+        res.status(200).json({
+            status: true,
+            message: "Success Password has been Updated",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: false,
+            message: err.message
+        })
+    }
+}
+
 module.exports = {
     index,
     createUser,
     userById,
     updateProfilePic,
-    updateUser
+    updateUser,
+    changePassword
 }

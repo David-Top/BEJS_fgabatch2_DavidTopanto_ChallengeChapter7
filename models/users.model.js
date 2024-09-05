@@ -1,4 +1,5 @@
 // const DB = require('../config/db');
+const bcrypt = require('bcrypt');
 
 const imageKitConfig = require("../config/lib/imagekit");
 const prisma = require("../config/prisma/index");
@@ -11,7 +12,7 @@ const USERS = {
         data: {
           username,
           email,
-          password,
+          password: bcrypt.hashSync(password, 10), //hashing user's password
         },
         select: {
           id: true,
@@ -99,6 +100,44 @@ const USERS = {
         return result;
     } catch (err) {
         console.log(err);
+        return {
+            status: "failed",
+            message: err.message
+        }
+    }
+  },
+
+  updatePassword: async (req, res) => {  
+    const user_payload = {
+      id: req.params.id,
+      password: req.body.password
+    }
+
+    try {
+      const user = await prisma.users.findUnique({
+        where: {
+          id: user_payload.id
+        }
+      });
+  
+      if (!user) {
+        throw new Error("User Not Found");      
+      }
+
+      if (!user_payload.password) {
+        throw new Error("Data Can Not be Null");        
+      }
+
+      return await prisma.users.update({
+        where: {
+          id: user_payload.id
+        },
+        data: {
+          password: bcrypt.hashSync(user.password, 10), //hashing user's password
+        }
+      });      
+    } catch (err) {
+      console.log(err);
         return {
             status: "failed",
             message: err.message
