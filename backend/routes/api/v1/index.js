@@ -15,6 +15,9 @@ router.post('/register', AUTH_CONTROLLER.register);
 //Endpoint for Authentincation Feature
 router.post('/login', AUTH_CONTROLLER.login);
 
+//Endpoint for Verify OTP from Authentication Login
+router.post('/verify-otp', AUTH_CONTROLLER.verifyOTP);
+
 //Endpoint for Froget Password
 router.post('/forget-password', AUTH_CONTROLLER.forgetPassword);
 

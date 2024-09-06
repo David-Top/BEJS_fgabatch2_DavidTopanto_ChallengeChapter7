@@ -118,6 +118,59 @@ async function login(req, res) {
     }
 }
 
+async function verifyOTP(req, res) {
+    const user_payload = {
+        email: req.body.email,
+        otp: req.body.otp
+    }
+
+    try {
+        const user = await prisma.users.findUnique({
+            where: {
+                email: user_payload.email
+            }
+        });
+    
+        if (!user) {
+            throw new Error('User Not Found');
+        }
+
+        if (user.otp !== user_payload.otp) {
+            throw new Error('OTP Not Match')
+        }
+
+        const token = await jwt.sign(
+            {
+                email: user.email,
+                id: user.id
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: '1h'
+            }
+        );
+
+        await prisma.users.update({
+            where: {
+                email: user.email
+            },
+            data: {
+                otp: null
+            }
+        });
+
+        res.status(200).json({
+            message: "OTP Verified",
+            token: token
+        })
+    } catch (err) {
+        res.status(400).json({
+            message: err.message
+        })
+        console.log(err)
+    }
+}
+
 async function forgetPassword(req, res) {
     const user_payload = {
         email: req.body.email
@@ -199,5 +252,6 @@ module.exports = {
     register,
     login,
     forgetPassword,
-    changePassword
+    changePassword,
+    verifyOTP
 }
