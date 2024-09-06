@@ -5,30 +5,30 @@ const imageKitConfig = require("../config/lib/imagekit");
 const prisma = require("../config/prisma/index");
 
 const USERS = {
-  create: async (req) => {
-    try {
-      const { username, email, password } = req.body;
-      const user = await prisma.users.create({
-        data: {
-          username,
-          email,
-          password: bcrypt.hashSync(password, 10), //hashing user's password
-        },
-        select: {
-          id: true,
-          username: true,
-          email: true,
-          password: true,
-          profilePic: true,
-          createdAt: true,
-        },
-      });
-      return user;
-    } catch (err) {
-      console.log(err);
-      return { status: "failed", message: err.message };
-    }
-  },
+  // create: async (req) => {
+  //   try {
+  //     const { username, email, password } = req.body;
+  //     const user = await prisma.users.create({
+  //       data: {
+  //         username,
+  //         email,
+  //         password: bcrypt.hashSync(password, 10), //hashing user's password
+  //       },
+  //       select: {
+  //         id: true,
+  //         username: true,
+  //         email: true,
+  //         password: true,
+  //         profilePic: true,
+  //         createdAt: true,
+  //       },
+  //     });
+  //     return user;
+  //   } catch (err) {
+  //     console.log(err);
+  //     return { status: "failed", message: err.message };
+  //   }
+  // },
 
   updateProfilePic: async (req) => {
     const userId = req.params.id;
@@ -107,43 +107,43 @@ const USERS = {
     }
   },
 
-  updatePassword: async (req, res) => {  
-    const user_payload = {
-      id: req.params.id,
-      password: req.body.password
-    }
+  // updatePassword: async (req) => {  
+  //   const user_payload = {
+  //     id: req.params.id,
+  //     password: req.body.password
+  //   }
 
-    try {
-      const user = await prisma.users.findUnique({
-        where: {
-          id: user_payload.id
-        }
-      });
+  //   try {
+  //     const user = await prisma.users.findUnique({
+  //       where: {
+  //         id: user_payload.id
+  //       }
+  //     });
   
-      if (!user) {
-        throw new Error("User Not Found");      
-      }
+  //     if (!user) {
+  //       throw new Error("User Not Found");      
+  //     }
 
-      if (!user_payload.password) {
-        throw new Error("Data Can Not be Null");        
-      }
+  //     if (!user_payload.password) {
+  //       throw new Error("Data Can Not be Null");        
+  //     }
 
-      return await prisma.users.update({
-        where: {
-          id: user_payload.id
-        },
-        data: {
-          password: bcrypt.hashSync(user.password, 10), //hashing user's password
-        }
-      });      
-    } catch (err) {
-      console.log(err);
-        return {
-            status: "failed",
-            message: err.message
-        }
-    }
-  }
+  //     return await prisma.users.update({
+  //       where: {
+  //         id: user_payload.id
+  //       },
+  //       data: {
+  //         password: bcrypt.hashSync(user_payload.password, 10), //hashing user's password
+  //       }
+  //     });      
+  //   } catch (err) {
+  //     console.log(err);
+  //       return {
+  //           status: "failed",
+  //           message: err.message
+  //       }
+  //   }
+  // }
 };
 
 module.exports = USERS;

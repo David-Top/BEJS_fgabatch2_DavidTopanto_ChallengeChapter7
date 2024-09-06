@@ -3,6 +3,50 @@ const bycrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { transporter } = require('../config/lib/mailer')
 
+async function register(req, res) {
+    const user_payload = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    };
+
+    if (!user_payload.username || !user_payload.email || !user_payload.password) {
+        throw new Error("Data can not be Null");        
+    }
+
+    try {
+        const result = await prisma.users.create({
+            data:{
+                username: user_payload.username,
+                email: user_payload.email,
+                password: bycrypt.hashSync(user_payload.password, 10) //hashing user's password
+            },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                password: true,
+                profilePic: true,
+                otp: true,
+                socket_id: true,
+                user_agent: true,
+                createdAt: true
+            }
+        });
+        
+        res.json({
+            status: 201,
+            message: "Register Succesfully",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: false,
+            message: err.message,
+        });
+    }
+}
+
 async function login(req, res) {
     const user_agent = req.headers['user-agent'];
 
@@ -26,9 +70,9 @@ async function login(req, res) {
                 
         const isPassword = bycrypt.compareSync(user_payload.password, user.password);    //compare inputed password and password in database (already been hashed)
 
-        console.log(user_payload.password);
-        console.log(user.password);
-        console.log(isPassword);
+        // console.log(user_payload.password);
+        // console.log(user.password);
+        // console.log(isPassword);
         
         if (!isPassword) {
             throw new Error('Username or Password not Match')
@@ -94,7 +138,7 @@ async function forgetPassword(req, res) {
             from: process.env.EMAIL,
             to: user.email,
             subject: "Reset Password",
-            text: `http://localhost:5500/api/v1/users/change-password/${user.id}`
+            text: `http://localhost:5500/api/v1/change-password/${user.id}`
         })
 
         return res.status(200).json({
@@ -108,7 +152,52 @@ async function forgetPassword(req, res) {
     }
 }
 
+async function changePassword(req, res) {
+    const user_payload = {
+        id: req.params.id,
+        password: req.body.password
+    }
+
+    try {
+        const user = await prisma.users.findUnique({
+            where: {
+                id: user_payload.id
+            }
+        });
+
+        if (!user) {
+            throw new Error("User Not Found");            
+        }
+
+        if (!user_payload.password) {
+            throw new Error("Data Can Not be Null");            
+        }
+
+        const result = await prisma.users.update({
+            where: {
+                id: user_payload.id
+            },
+            data: {
+                password: bycrypt.hashSync(user_payload.password, 10)
+            }
+        });
+
+        res.status(200).json({
+            status: true,
+            message: "Success Password has been Updated",
+            data: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: false,
+            message: err.message
+        })
+    }
+}
+
 module.exports = {
+    register,
     login,
-    forgetPassword
+    forgetPassword,
+    changePassword
 }

@@ -23,21 +23,21 @@ async function index(req, res) {
     }
 }
 
-async function createUser(req, res) {
-    try {        
-        const result = await USERS_MODELS.create(req);
-        res.json({
-            status: 201,
-            message: "Success POST Users API",
-            data: result
-        })        
-    } catch (err) {
-        res.status(500).json({
-            status: false,
-            message: err.message,
-          });
-    }
-}
+// async function createUser(req, res) {
+//     try {        
+//         const result = await USERS_MODELS.create(req);
+//         res.json({
+//             status: 201,
+//             message: "Success POST Users API",
+//             data: result
+//         })        
+//     } catch (err) {
+//         res.status(500).json({
+//             status: false,
+//             message: err.message,
+//           });
+//     }
+// }
 
 async function userById(req, res) {
     try {
@@ -111,28 +111,28 @@ async function updateUser(req, res) {
     }
 }
 
-async function changePassword(req, res) {
-    try {
-        const result = await USERS_MODELS.updatePassword(req)
+// async function changePassword(req, res) {
+//     try {
+//         const result = await USERS_MODELS.updatePassword(req)
 
-        res.status(200).json({
-            status: true,
-            message: "Success Password has been Updated",
-            data: result
-        })
-    } catch (err) {
-        res.status(500).json({
-            status: false,
-            message: err.message
-        })
-    }
-}
+//         res.status(200).json({
+//             status: true,
+//             message: "Success Password has been Updated",
+//             data: result
+//         })
+//     } catch (err) {
+//         res.status(500).json({
+//             status: false,
+//             message: err.message
+//         })
+//     }
+// }
 
 module.exports = {
     index,
-    createUser,
+    // createUser,
     userById,
     updateProfilePic,
-    updateUser,
-    changePassword
+    updateUser
+    // changePassword
 }

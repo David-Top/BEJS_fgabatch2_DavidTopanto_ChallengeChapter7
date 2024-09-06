@@ -9,7 +9,7 @@ const AUTH_MIDDLEWARE = require('../../../../middleware/auth.middleware')
 router.get('/',AUTH_MIDDLEWARE, USERS_CONTROLLERS.index);
 
 //POST user data
-router.post('/create', USERS_CONTROLLERS.createUser);
+// router.post('/create', USERS_CONTROLLERS.createUser);
 
 //GET user data by id
 router.get('/:id', AUTH_MIDDLEWARE, USERS_CONTROLLERS.userById);
@@ -21,6 +21,6 @@ router.put('/upload-profile-pic/:id', PIC.post.single('profilePicture'), USERS_C
 router.put('/update/:id', USERS_CONTROLLERS.updateUser);
 
 //PUT user password
-router.put('/change-password/:id', USERS_CONTROLLERS.changePassword);
+// router.put('/change-password/:id', USERS_CONTROLLERS.changePassword);
 
 module.exports = router;
